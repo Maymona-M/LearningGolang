@@ -25,3 +25,4 @@ This section builds the core understanding of how Go handles data, memory, and b
 
 ```bash
 go run filename.go
+```
