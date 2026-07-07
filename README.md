@@ -4,7 +4,8 @@ A structured self-study repo documenting my journey learning Go from scratch.
 
 I'm learning Golang through hands-on practice:
 - one concept at a time,
-- one commit at a time. 
+- one commit at a time.
+
 Each folder covers a core concept with working code examples and notes.
 
 ## What's covered so far
