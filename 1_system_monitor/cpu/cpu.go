@@ -1,6 +1,7 @@
 package cpu
 
 import (
+	"time"
 	"github.com/shirou/gopsutil/v3/cpu"
 )
 
@@ -13,7 +14,7 @@ type CPU struct {
 func GetCPU() (CPU, error) {
 
 	// Get usage percentage
-	usage, err := cpu.Percent(0, false)
+	usage, err := cpu.Percent(time.Second, false)
 
 	if err != nil {
 		return CPU{}, err
