@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net"
-	
-	"learninggolang/1_system_monitor/cpu"
-	"learninggolang/1_system_monitor/disk"
-	"learninggolang/1_system_monitor/memory"
+
+	"learninggolang/projects/1_system_monitor/cpu"
+	"learninggolang/projects/1_system_monitor/disk"
+	"learninggolang/projects/1_system_monitor/memory"
 )
 
 

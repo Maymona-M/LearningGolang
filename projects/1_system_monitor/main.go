@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"system-monitor/cpu"
-	"system-monitor/disk"
-	"system-monitor/memory"
+	
+	"learninggolang/projects/1_system_monitor/cpu"
+	"learninggolang/projects/1_system_monitor/disk"
+	"learninggolang/projects/1_system_monitor/memory"
 )
 
 func main() {
