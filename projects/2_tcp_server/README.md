@@ -2,7 +2,7 @@
 
 A finished mini-project: a TCP-based system agent that collects live CPU, Memory, and Disk usage and sends it to a server over a network connection.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 2_tcp_server/
@@ -12,7 +12,7 @@ A finished mini-project: a TCP-based system agent that collects live CPU, Memory
     └── server.go     # Listens for a connection and prints received stats
 ```
 
-## ⚙️ How It Works
+## How It Works
 
 **`server/server.go`**
 1. Starts a TCP listener on port `8080`
@@ -26,7 +26,7 @@ A finished mini-project: a TCP-based system agent that collects live CPU, Memory
 3. Formats the stats as a single line of text
 4. Sends it over the connection
 
-## 🧠 Key Concepts Used
+## Key Concepts Used
 
 | Concept | Meaning |
 |---|---|
@@ -35,7 +35,7 @@ A finished mini-project: a TCP-based system agent that collects live CPU, Memory
 | `fmt.Fprintf(conn, ...)` | Formats text and writes it directly to a connection |
 | `log.Fatal(err)` | Used for setup failures where the program truly cannot continue |
 
-## 🚀 How to Run
+## How to Run
 
 **Terminal 1 — start the server:**
 ```bash
@@ -57,7 +57,7 @@ Client connected!
 Message received: CPU: 45.2% | Memory: 77.7% | Disk: 62.3%
 ```
 
-## 🔧 Notes
+## Notes
 
 - This project currently handles **one connection at a time** — the server exits after receiving one message, and the agent sends only once
 - Import paths rely on the root module `learninggolang`, importing `1_system_monitor`'s `cpu`, `memory`, and `disk` packages directly — no duplicated logic
