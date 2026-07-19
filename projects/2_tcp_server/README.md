@@ -1,4 +1,4 @@
-# 2_tcp_server
+# 2: TCP Server
 
 A finished mini-project: a TCP-based system agent that collects live CPU, Memory, and Disk usage and sends it to a server over a network connection — with the agent running as a background service on Linux, and readings persisted to a SQLite database on the server.
 
