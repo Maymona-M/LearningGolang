@@ -1,0 +1,11 @@
+# Compiled binaries
+*.exe
+agent
+server
+
+# SQLite database files
+*.db
+*.db-journal
+
+# OS/editor junk (optional but common)
+.vscode/

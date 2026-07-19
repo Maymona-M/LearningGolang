@@ -39,7 +39,7 @@ func main() {
 			Time: time.Now().Unix(),
 		}
 
-		conn, err := net.Dial("tcp", "192.168.56.1:8080")
+		conn, err := net.Dial("tcp", "127.0.0.1:8080")
 		if err != nil {
 			log.Fatal(err)
 		}
