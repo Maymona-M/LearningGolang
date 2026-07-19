@@ -1,4 +1,4 @@
-# System Monitor
+# 1: System Monitor
 
 A simple Go CLI tool that reads your computer's **CPU**, **Memory**, and **Disk** usage and prints a clean summary to the terminal.
 
