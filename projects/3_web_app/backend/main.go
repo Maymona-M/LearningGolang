@@ -16,6 +16,15 @@ type PingResponse struct {
 	Status string `json:"status"`
 }
 
+type Reading struct {
+	ID        int     `json:"id"`
+	IP        string  `json:"ip"`
+	CPU       float64 `json:"cpu"`
+	Mem       float64 `json:"mem"`
+	Disk      float64 `json:"disk"`
+	Timestamp int64   `json:"timestamp"`
+}
+
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := PingResponse{Status: "ok"}
@@ -44,6 +53,33 @@ func ipsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(ips)
 }
 
+func readingsHandler(w http.ResponseWriter, r *http.Request) {
+	ip := r.URL.Query().Get("ip")
+	if ip == "" {
+		http.Error(w, "Missing 'ip' query parameter", http.StatusBadRequest)
+		return
+	}
+
+	rows, err := db.Query("SELECT id, ip, cpu, mem, disk, timestamp FROM readings WHERE ip = ?", ip)
+	if err != nil {
+		http.Error(w, "Database query failed", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var readings []Reading
+	for rows.Next() {
+		var reading Reading
+		if err := rows.Scan(&reading.ID, &reading.IP, &reading.CPU, &reading.Mem, &reading.Disk, &reading.Timestamp); err != nil {
+			http.Error(w, "Failed to read readings", http.StatusInternalServerError)
+			return
+		}
+		readings = append(readings, reading)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(readings)
+}
 
 func main() {
 	var err error
@@ -53,8 +89,10 @@ func main() {
 	}
 	defer db.Close()
 
+	// Routes Registered
 	http.HandleFunc("/api/ping", pingHandler)
 	http.HandleFunc("/api/ips", ipsHandler)
+	http.HandleFunc("/api/readings", readingsHandler)
 
 	fmt.Println("Server starting on :8081")
 	err = http.ListenAndServe(":8081", nil)
