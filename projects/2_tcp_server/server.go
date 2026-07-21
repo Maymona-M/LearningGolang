@@ -58,8 +58,10 @@ func handleConnection(conn net.Conn) {
 
 	readableTime := time.Unix(payload.Time, 0).Format("03:04:05 PM")
 
-	fmt.Printf("From %s -> CPU: %.1f%% | Mem: %.1f%% | Disk: %.1f%% | Time: %s\n",
-		ip, payload.CPU, payload.Mem, payload.Disk, readableTime)
+	fmt.Printf("CPU: %.1f%% | Mem: %.1f%% | Disk: %.1f%% | Time: %s\n",
+		payload.CPU, payload.Mem, payload.Disk, readableTime)
+
+	fmt.Printf("-------------------------------------------------------\n")
 
 	_, err = db.Exec(
 		"INSERT INTO readings (ip, cpu, mem, disk, timestamp) VALUES (?, ?, ?, ?, ?)",
