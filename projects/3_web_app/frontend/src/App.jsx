@@ -1,9 +1,10 @@
 import './App.css'
+import IPListPage from './IPListPage.jsx'
 
 function App() {
   return (
     <div>
-      <h1>System Monitor</h1>
+      <IPListPage />
     </div>
   )
 }
