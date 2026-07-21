@@ -81,6 +81,21 @@ func readingsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(readings)
 }
 
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	var err error
 	db, err = sql.Open("sqlite", "../../2_tcp_server/monitor.db")
@@ -90,12 +105,13 @@ func main() {
 	defer db.Close()
 
 	// Routes Registered
-	http.HandleFunc("/api/ping", pingHandler)
-	http.HandleFunc("/api/ips", ipsHandler)
-	http.HandleFunc("/api/readings", readingsHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/ping", pingHandler)         // health check
+	mux.HandleFunc("/api/ips", ipsHandler)           // returns list of unique sender IPs
+	mux.HandleFunc("/api/readings", readingsHandler) // returns readings for a given ?ip=
 
 	fmt.Println("Server starting on :8081")
-	err = http.ListenAndServe(":8081", nil)
+	err = http.ListenAndServe(":8081", enableCORS(mux))
 	if err != nil {
 		fmt.Println("Server failed to start:", err)
 	}
