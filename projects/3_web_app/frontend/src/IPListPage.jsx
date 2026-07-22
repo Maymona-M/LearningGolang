@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import serverIcon from './assets/server.png'
 
 // onSelectIp is passed down from App.jsx — called when an IP is clicked
 function IPListPage({ onSelectIp }) {
@@ -13,19 +14,20 @@ function IPListPage({ onSelectIp }) {
     }, [])
 
     // build list items manually
-    const listItems = []
+    const cards = []
     ips.forEach(ip => {
-        listItems.push(
-            <li key={ip}>
-                <button onClick={() => onSelectIp(ip)}>{ip}</button>
-            </li>
+        cards.push(
+            <button key={ip} className="server-card" onClick={() => onSelectIp(ip)}>
+                <img src={serverIcon} alt="server" />
+                <span>{ip}</span>
+            </button>
         )
     })
 
     return (
         <div>
-            <h1>Known Connections</h1>
-            <ul>{listItems}</ul>
+            <h1 style={{ textAlign: 'center' }}>Known Machines</h1>
+            <div className="server-list">{cards}</div>
         </div>
     )
 }
