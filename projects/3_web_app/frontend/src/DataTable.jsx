@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react'
+
+const ROWS_PER_PAGE = 10
 
 function DataTable({ columns, data }) {
     const [sortKey, setSortKey] = useState(null)
     const [sortAsc, setSortAsc] = useState(true)
+    const [currentPage, setCurrentPage] = useState(1)
 
     const handleSort = (key) => {
         if (sortKey === key) {
@@ -11,6 +14,7 @@ function DataTable({ columns, data }) {
             setSortKey(key)
             setSortAsc(true)
         }
+        setCurrentPage(1) // reset to page 1 whenever sort changes
     }
 
     let sortedData = [...data]
@@ -22,7 +26,20 @@ function DataTable({ columns, data }) {
         })
     }
 
-    // build header cells manually
+    // figure out which slice of data belongs to the current page
+    const totalPages = Math.ceil(sortedData.length / ROWS_PER_PAGE)
+    const startIndex = (currentPage - 1) * ROWS_PER_PAGE
+    const pageData = sortedData.slice(startIndex, startIndex + ROWS_PER_PAGE)
+
+    const goToPreviousPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1)
+    }
+
+    const goToNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+    }
+
+    // build header cells
     const headerCells = []
     columns.forEach(col => {
         headerCells.push(
@@ -32,9 +49,9 @@ function DataTable({ columns, data }) {
         )
     })
 
-    // build table rows manually
+    // build rows for only the current page
     const bodyRows = []
-    sortedData.forEach(row => {
+    pageData.forEach(row => {
         const cells = []
         columns.forEach(col => {
             cells.push(
@@ -45,12 +62,24 @@ function DataTable({ columns, data }) {
     })
 
     return (
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-            <thead>
-                <tr>{headerCells}</tr>
-            </thead>
-            <tbody>{bodyRows}</tbody>
-        </table>
+        <div>
+            <table>
+                <thead>
+                    <tr>{headerCells}</tr>
+                </thead>
+                <tbody>{bodyRows}</tbody>
+            </table>
+
+            <div className="page-nav">
+                <button onClick={goToPreviousPage} disabled={currentPage === 1}>
+                    ← Previous
+                </button>
+                <span> Page {currentPage} of {totalPages} </span>
+                <button onClick={goToNextPage} disabled={currentPage === totalPages}>
+                    Next →
+                </button>
+            </div>
+        </div>
     )
 }
 
