@@ -25,8 +25,8 @@ function IPListPage({ onSelectIp }) {
     })
 
     return (
-        <div>
-            <h1 style={{ textAlign: 'center' }}>Known Machines</h1>
+        <div className="page">
+            <h1>Known Machines</h1>
             <div className="server-list">{cards}</div>
         </div>
     )

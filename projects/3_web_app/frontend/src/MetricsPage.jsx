@@ -16,7 +16,7 @@ function MetricsPage({ ip, onBack }) {
     // build table columns
     const columns = [
         { key: 'cpu', label: 'CPU', render: row => `${row.cpu.toFixed(1)}%` },
-        { key: 'mem', label: 'Mem', render: row => `${row.mem.toFixed(1)}%` },
+        { key: 'mem', label: 'Memory', render: row => `${row.mem.toFixed(1)}%` },
         { key: 'disk', label: 'Disk', render: row => `${row.disk.toFixed(1)}%` },
         {
             key: 'timestamp',
