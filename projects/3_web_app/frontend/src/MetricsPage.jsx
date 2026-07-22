@@ -15,12 +15,25 @@ function MetricsPage({ ip, onBack }) {
     // build table rows
     const rows = []
     readings.forEach(reading => {
+        // Convert Unix timestamp (seconds) to JavaScript timestamp (milliseconds)
+        const date = new Date(reading.timestamp * 1000)
+        // Format options for Date and 12-hour AM/PM Time
+        const readableTime = date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        })
+
         rows.push(
             <tr key={reading.id}>
                 <td>{reading.cpu.toFixed(1)}%</td>
                 <td>{reading.mem.toFixed(1)}%</td>
                 <td>{reading.disk.toFixed(1)}%</td>
-                <td>{reading.timestamp}</td>
+                <td>{readableTime}</td>
             </tr>
         )
     })
