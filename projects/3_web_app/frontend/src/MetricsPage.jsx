@@ -69,8 +69,7 @@ function MetricsPage({ ip, onBack }) {
             <h1>Metrics for {ip}</h1>
 
             <h2>Trend</h2>
-            <MetricsChart readings={readings} granularity={granularity} />
-
+            <MetricsChart readings={readings} tableGranularity={granularity} />
             <h2>Readings</h2>
             <div className="view-selector">
                 <label>View: </label>
