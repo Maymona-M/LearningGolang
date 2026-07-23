@@ -60,7 +60,7 @@ func readingsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := db.Query("SELECT id, ip, cpu, mem, disk, timestamp FROM readings WHERE ip = ?", ip)
+	rows, err := db.Query("SELECT id, ip, cpu, mem, disk, timestamp FROM readings WHERE ip = ? ORDER BY timestamp DESC", ip)
 	if err != nil {
 		http.Error(w, "Database query failed", http.StatusInternalServerError)
 		return

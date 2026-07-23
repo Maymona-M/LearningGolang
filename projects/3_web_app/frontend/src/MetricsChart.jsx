@@ -1,10 +1,16 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts'
 
 function MetricsChart({ readings }) {
+    // reverse so the chart reads oldest -> newest, left to right
+    const chronological = [...readings].reverse()
+
+
     const chartData = []
-    readings.forEach(reading => {
+    chronological.forEach(reading => {
         chartData.push({
-            time: new Date(reading.timestamp * 1000).toLocaleTimeString(),
+            time: new Date(reading.timestamp * 1000).toLocaleString('en-US', {
+                month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            }),
             CPU: reading.cpu,
             Memory: reading.mem,
             Disk: reading.disk
