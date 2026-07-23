@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import DataTable from './DataTable.jsx'
 import MetricsChart from './MetricsChart.jsx'
+import { aggregateReadings } from './aggregate.js'
 
 
 // ip = which machine to show; onBack = return to list page
 function MetricsPage({ ip, onBack }) {
     const [readings, setReadings] = useState([])
+    const [granularity, setGranularity] = useState('raw') // 'raw' | 'hour' | 'day'
+
 
     // re-fetch whenever ip changes and fetch in real time every 3 seconds
     useEffect(() => {
@@ -24,7 +27,7 @@ function MetricsPage({ ip, onBack }) {
     }, [ip])
 
     // build table columns
-    const columns = [
+    const rawColumns = [
         { key: 'cpu', label: 'CPU', render: row => `${row.cpu.toFixed(1)}%` },
         { key: 'mem', label: 'Memory', render: row => `${row.mem.toFixed(1)}%` },
         { key: 'disk', label: 'Disk', render: row => `${row.disk.toFixed(1)}%` },
@@ -44,17 +47,41 @@ function MetricsPage({ ip, onBack }) {
         }
     ]
 
+    const aggregatedColumns = [
+        { key: 'period', label: 'Period' },
+        { key: 'cpu', label: 'Average CPU', render: row => `${row.cpu.toFixed(1)}%` },
+        { key: 'mem', label: 'Average Memory', render: row => `${row.mem.toFixed(1)}%` },
+        { key: 'disk', label: 'Average Disk', render: row => `${row.disk.toFixed(1)}%` },
+        { key: 'count', label: 'Readings' }
+    ]
+
+    // pick data + columns based on dropdown selection
+    let tableData = readings
+    let columns = rawColumns
+    if (granularity === 'hour' || granularity === 'day') {
+        tableData = aggregateReadings(readings, granularity)
+        columns = aggregatedColumns
+    }
+
     return (
         <div className="page">
             <button className="back-button" onClick={onBack}>← Back</button>
-            <h1>Metrics for</h1>
-            <h1> {ip} </h1>
+            <h1>Metrics for {ip}</h1>
 
             <h2>Trend</h2>
             <MetricsChart readings={readings} />
 
-            <h2>Recent Readings</h2>
-            <DataTable columns={columns} data={readings} />
+            <h2>Readings</h2>
+            <div className="view-selector">
+                <label>View: </label>
+                <select value={granularity} onChange={e => setGranularity(e.target.value)}>
+                    <option value="raw">Raw (every reading)</option>
+                    <option value="hour">Hourly average</option>
+                    <option value="day">Daily average</option>
+                </select>
+            </div>
+
+            <DataTable columns={columns} data={tableData} />
         </div>
     )
 }

@@ -145,6 +145,7 @@ tbody tr:hover {
     font-size: 14px;
     color: #555;
 }
+
 /* 
 .chart-grid {
     display: flex;
@@ -169,3 +170,15 @@ tbody tr:hover {
     color: #555;
     margin-bottom: 5px;
 } */
+
+.view-selector {
+    margin: 10px 0 15px;
+    font-size: 14px;
+}
+
+.view-selector select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-left: 8px;
+}
