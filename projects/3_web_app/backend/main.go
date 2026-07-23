@@ -104,6 +104,9 @@ func main() {
 	}
 	defer db.Close()
 
+	initUsersTable()
+	createDefaultAdmin()
+
 	// Routes Registered
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/ping", pingHandler)         // health check
