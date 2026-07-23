@@ -37,7 +37,8 @@ function MetricsPage({ ip, onBack }) {
     return (
         <div className="page">
             <button className="back-button" onClick={onBack}>← Back</button>
-            <h1>Metrics for {ip}</h1>
+            <h1>Metrics for</h1>
+            <h1> {ip} </h1>
             <DataTable columns={columns} data={readings} />
         </div>
     )
