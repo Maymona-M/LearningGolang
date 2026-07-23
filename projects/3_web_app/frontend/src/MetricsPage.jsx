@@ -7,12 +7,20 @@ import MetricsChart from './MetricsChart.jsx'
 function MetricsPage({ ip, onBack }) {
     const [readings, setReadings] = useState([])
 
-    // re-fetch whenever ip changes
+    // re-fetch whenever ip changes and fetch in real time every 3 seconds
     useEffect(() => {
-        fetch(`http://localhost:8081/api/readings?ip=${ip}`)
-            .then(response => response.json())
-            .then(data => setReadings(data))
-            .catch(error => console.error('Error fetching readings:', error))
+        const fetchReadings = () => {
+            fetch(`http://localhost:8081/api/readings?ip=${ip}`)
+                .then(response => response.json())
+                .then(data => setReadings(data))
+                .catch(error => console.error('Error fetching readings:', error))
+        }
+
+        fetchReadings() // run once immediately
+
+        const interval = setInterval(fetchReadings, 3000) // then every 5 seconds
+
+        return () => clearInterval(interval) // cleanup when leaving the page
     }, [ip])
 
     // build table columns
