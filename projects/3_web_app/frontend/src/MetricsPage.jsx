@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import DataTable from './DataTable.jsx'
+import MetricsChart from './MetricsChart.jsx'
+
 
 // ip = which machine to show; onBack = return to list page
 function MetricsPage({ ip, onBack }) {
@@ -39,6 +41,11 @@ function MetricsPage({ ip, onBack }) {
             <button className="back-button" onClick={onBack}>← Back</button>
             <h1>Metrics for</h1>
             <h1> {ip} </h1>
+
+            <h2>Trend</h2>
+            <MetricsChart readings={readings} />
+
+            <h2>Recent Readings</h2>
             <DataTable columns={columns} data={readings} />
         </div>
     )
