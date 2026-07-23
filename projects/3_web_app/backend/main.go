@@ -112,6 +112,7 @@ func main() {
 	mux.HandleFunc("/api/ping", pingHandler)         // health check
 	mux.HandleFunc("/api/ips", ipsHandler)           // returns list of unique sender IPs
 	mux.HandleFunc("/api/readings", readingsHandler) // returns readings for a given ?ip=
+	mux.HandleFunc("/api/login", loginHandler) // handles POST login requests, checks username/password
 
 	fmt.Println("Server starting on :8081")
 	err = http.ListenAndServe(":8081", enableCORS(mux))
