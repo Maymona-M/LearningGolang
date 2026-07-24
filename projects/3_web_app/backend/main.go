@@ -109,10 +109,13 @@ func main() {
 
 	// Routes Registered
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/ping", pingHandler)         // health check
-	mux.HandleFunc("/api/ips", ipsHandler)           // returns list of unique sender IPs
-	mux.HandleFunc("/api/readings", readingsHandler) // returns readings for a given ?ip=
-	mux.HandleFunc("/api/login", loginHandler) // handles POST login requests, checks username/password
+	mux.HandleFunc("/api/ping", pingHandler)               // health check
+	mux.HandleFunc("/api/ips", ipsHandler)                 // returns list of unique sender IPs
+	mux.HandleFunc("/api/readings", readingsHandler)       // returns readings for a given ?ip=
+	mux.HandleFunc("/api/login", loginHandler)             // handles POST login requests, checks username/password
+	mux.HandleFunc("/api/users/create", createUserHandler) // admin creates a new user
+	mux.HandleFunc("/api/users/list", listUsersHandler)    // returns all users (no password hashes)
+	mux.HandleFunc("/api/users/delete", deleteUserHandler) // admin deletes a user by ?id=
 
 	fmt.Println("Server starting on :8081")
 	err = http.ListenAndServe(":8081", enableCORS(mux))

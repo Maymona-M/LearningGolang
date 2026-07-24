@@ -68,6 +68,100 @@ type LoginResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
+// shape of the incoming "create user" request body
+type CreateUserRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+}
+
+// shape of a user record returned to the frontend (no password hash included)
+type User struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	Role     string `json:"role"`
+}
+
+func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed) // only DELETE allowed
+		return
+	}
+
+	idStr := r.URL.Query().Get("id") // read ?id= from the URL
+	if idStr == "" {
+		http.Error(w, "Missing 'id' query parameter", http.StatusBadRequest)
+		return
+	}
+
+	_, err := db.Exec("DELETE FROM users WHERE id = ?", idStr) // delete the matching row
+	if err != nil {
+		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "User deleted"}) // confirm success
+}
+
+func listUsersHandler(w http.ResponseWriter, r *http.Request) {
+	rows, err := db.Query("SELECT id, username, role FROM users") // only select the 3 safe columns
+	if err != nil {
+		http.Error(w, "Database query failed", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var u User
+		if err := rows.Scan(&u.ID, &u.Username, &u.Role); err != nil { // read each row into a User
+			http.Error(w, "Error reading row", http.StatusInternalServerError)
+			return
+		}
+		users = append(users, u)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users) // send back the full list as JSON
+}
+
+func createUserHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed) // only POST allowed
+		return
+	}
+
+	var req CreateUserRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil { // parse incoming JSON
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if req.Username == "" || req.Password == "" || req.Role == "" { // basic validation
+		http.Error(w, "Username, password, and role are required", http.StatusBadRequest)
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost) // hash before storing
+	if err != nil {
+		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = db.Exec(
+		"INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+		req.Username, string(hashedPassword), req.Role,
+	) // insert the new user
+	if err != nil {
+		http.Error(w, "Username already exists", http.StatusConflict) // UNIQUE constraint failed
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"}) // confirm success
+}
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed) // only POST allowed here
